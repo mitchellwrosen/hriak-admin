@@ -1,0 +1,26 @@
+name: hriak-admin
+version: 0.0.1.0
+synopsis: Riak console client
+description: Riak console client
+github: mitchellwrosen/hriak-admin
+license: BSD3
+author: Mitchell Rosen
+maintainer: mitchellwrosen@gmail.com
+copyright: 2016 Mitchell Rosen
+
+ghc-options: -Wall
+
+executables:
+  hriak-admin:
+    main: Main.hs
+    dependencies:
+      - aeson
+      - base
+      - bytestring
+      - http-client
+      - lens
+      - optional-args
+      - string-conversions
+      - turtle
+      - unordered-containers
+      - wreq

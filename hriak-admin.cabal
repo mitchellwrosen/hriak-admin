@@ -1,0 +1,37 @@
+-- This file has been generated from package.yaml by hpack version 0.9.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:                hriak-admin
+version:             0.0.1.0
+synopsis:            Riak console client
+description:         Riak console client
+homepage:            https://github.com/mitchellwrosen/hriak-admin#readme
+bug-reports:         https://github.com/mitchellwrosen/hriak-admin/issues
+license:             BSD3
+license-file:        LICENSE
+author:              Mitchell Rosen
+maintainer:          mitchellwrosen@gmail.com
+copyright:           2016 Mitchell Rosen
+build-type:          Simple
+cabal-version:       >= 1.10
+
+source-repository head
+  type: git
+  location: https://github.com/mitchellwrosen/hriak-admin
+
+executable hriak-admin
+  main-is: Main.hs
+  ghc-options: -Wall
+  build-depends:
+      aeson
+    , base
+    , bytestring
+    , http-client
+    , lens
+    , optional-args
+    , string-conversions
+    , turtle
+    , unordered-containers
+    , wreq
+  default-language: Haskell2010

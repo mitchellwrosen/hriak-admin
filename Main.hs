@@ -28,21 +28,17 @@ commandParser =
     (CommandCountKeys <$> countKeysParser)
 
 --------------------------------------------------------------------------------
--- hriak-admin count-keys
---     --host        <host>
---     --port        <port>
---     --bucket-type <bucket-type>
---     --bucket      <bucket-name>
+-- hriak-admin count-keys <host> <port> <type> <bucket>
 
 data CountKeysArgs = CountKeysArgs Host Port BucketType BucketName
   deriving Show
 
 countKeysParser :: Parser CountKeysArgs
 countKeysParser = CountKeysArgs
-  <$> optText "host"        'o' Default
-  <*> optInt  "port"        'p' Default
-  <*> optText "bucket-type" 't' Default
-  <*> optText "bucket"      'b' Default
+  <$> argText "host"   (Specific "Riak host")
+  <*> argInt  "port"   (Specific "Riak port")
+  <*> argText "type"   (Specific "Bucket type")
+  <*> argText "bucket" (Specific "Bucket name")
 
 --------------------------------------------------------------------------------
 -- main
@@ -57,23 +53,26 @@ main =
           body = 
             object
               [ "inputs" .= [bucket_type, bucket]
+              , "timeout" .= Number 86400000
               , "query"  .= 
                 [ object
                   [ "map" .= object
-                    [ "language" .= String "javascript"
-                    , "keep"     .= False
-                    , "source"   .= String "function(o){return [1];}"
+                    [ "language"                .= String "erlang"
+                    , "module"                  .= String "riak_kv_mapreduce"
+                    , "function"                .= String "map_identity"                 
+                    , "mapred_always_prereduce" .= True
                     ]
                   ]
                 , object
                   [ "reduce" .= object
-                    [ "language" .= String "javascript"
-                    , "keep"     .= True
-                    , "name"     .= String "Riak.reduceSum"
+                    [ "language" .= String "erlang"
+                    , "module"   .= String "riak_kv_mapreduce"
+                    , "function" .= String "reduce_count_inputs"
+                    , "arg"      .= object
+                      [ "reduce_phase_batch_size" .= Number 1000 ]
                     ]
                   ]
                 ]
-              , "timeout" .= Number 1800000 -- 30 minutes
               ]
       resp <- Wreq.postWith opts url body
       print (head (read (cs (resp^.Wreq.responseBody)) :: [Int]))
